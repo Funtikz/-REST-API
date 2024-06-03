@@ -3,6 +3,8 @@ package org.example.restapi.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Data
 @Accessors(chain = true)
 public class ApplicationDto {
@@ -11,4 +13,5 @@ public class ApplicationDto {
     String lastName;
     Integer couldCounter;
     Integer hotCounter;
+    LocalDateTime orderTime;
 }
