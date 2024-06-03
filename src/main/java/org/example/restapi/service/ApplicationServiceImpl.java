@@ -7,6 +7,7 @@ import org.example.restapi.entity.Application;
 import org.example.restapi.repository.ApplicationRepository;
 import org.example.restapi.service.model.ApplicationService;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Data
+@Validated
 public class ApplicationServiceImpl implements ApplicationService {
 
     private final ApplicationRepository applicationRepository;

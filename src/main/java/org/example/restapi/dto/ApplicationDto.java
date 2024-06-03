@@ -28,11 +28,11 @@ public class ApplicationDto {
     @Size(min = 2, max = 64)
     private String lastName;
 
-    @NotBlank(message = "Поле должно быть заполнено.")
+
     @Positive(message = "Количество счетчиков должно быть больше 0")
     private Integer couldCounter;
 
-    @NotBlank(message = "Поле должно быть заполнено.")
+
     @Positive(message = "Количество счетчиков должно быть больше 0")
     private Integer hotCounter;
 
