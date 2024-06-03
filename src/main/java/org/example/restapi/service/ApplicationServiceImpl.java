@@ -25,7 +25,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if (applicationRepository.existsById(id)) {
             applicationRepository.deleteById(id);
         } else {
-            throw new EntityNotFoundException("Application with id " + id + " not found");
+            throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
         }
     }
 
@@ -44,7 +44,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             Application updatedApplication = applicationRepository.save(existingApplication);
             return mapToDto(updatedApplication);
         } else {
-            throw new EntityNotFoundException("Application with id " + id + " not found");
+            throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
         }
     }
 
@@ -69,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             return mapToDto(maybeApplication.get());
         }
         else {
-            throw new EntityNotFoundException("Пользователя с " + id + " не существует");
+            throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
         }
     }
 
