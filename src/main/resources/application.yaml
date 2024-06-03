@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: REST-API
+  datasource:
+    username:
+    password:
+    url:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
