@@ -3,6 +3,8 @@ package org.example.restapi.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Table(name = "application")
@@ -22,4 +24,6 @@ public class Application {
     private Integer couldCounter;
     @Column(name = "hot_counter")
     private Integer hotCounter;
+    @Column(name = "order_time")
+    private LocalDateTime orderTime;
 }
