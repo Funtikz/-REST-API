@@ -46,4 +46,6 @@ public class ApplicationController {
     public ResponseEntity<ApplicationDto> update(@PathVariable("id") Long id, @Valid @RequestBody ApplicationDto application) {
         return new ResponseEntity<>(applicationService.updateApplication(id, application), HttpStatus.OK);
     }
+    
+
 }

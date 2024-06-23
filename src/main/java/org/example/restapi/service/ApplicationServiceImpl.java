@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.restapi.dto.ApplicationDto;
 import org.example.restapi.entity.Application;
+import org.example.restapi.mapper.ApplicationMapper;
 import org.example.restapi.repository.ApplicationRepository;
 import org.example.restapi.service.model.ApplicationService;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             existingApplication.setOrderTime(updatedApplicationDto.getOrderTime());
 
             Application updatedApplication = applicationRepository.save(existingApplication);
-            return mapToDto(updatedApplication);
+            return ApplicationMapper.INSTANCE.toDto(updatedApplication);
         } else {
             throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
         }
@@ -59,14 +60,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setHotCounter(applicationDto.getHotCounter());
         application.setOrderTime(applicationDto.getOrderTime());
         Application savedApplication = applicationRepository.save(application);
-        return mapToDto(savedApplication);
+        return ApplicationMapper.INSTANCE.toDto(savedApplication);
     }
 
     @Override
     public ApplicationDto getApplicationById(Long id) {
         Optional<Application> maybeApplication = applicationRepository.findById(id);
         if (maybeApplication.isPresent()){
-            return mapToDto(maybeApplication.get());
+            return ApplicationMapper.INSTANCE.toDto(maybeApplication.get());
         }
         else {
             throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
@@ -76,18 +77,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public List<ApplicationDto> getAllApplication() {
         return applicationRepository.findAll().stream()
-                .map(this::mapToDto)
+                .map(ApplicationMapper.INSTANCE::toDto)
                 .toList();
     }
-    private ApplicationDto mapToDto(Application application) {
-        ApplicationDto applicationDto = new ApplicationDto();
-        applicationDto.setFirstName(application.getFirstName());
-        applicationDto.setMiddleName(application.getMiddleName());
-        applicationDto.setLastName(application.getLastName());
-        applicationDto.setPhoneNumber(application.getPhoneNumber());
-        applicationDto.setCouldCounter(application.getCouldCounter());
-        applicationDto.setHotCounter(application.getHotCounter());
-        applicationDto.setOrderTime(application.getOrderTime());
-        return applicationDto;
-    }
+
 }

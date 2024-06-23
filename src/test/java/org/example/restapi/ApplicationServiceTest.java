@@ -4,6 +4,7 @@ package org.example.restapi;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.restapi.dto.ApplicationDto;
 import org.example.restapi.entity.Application;
+import org.example.restapi.mapper.ApplicationMapper;
 import org.example.restapi.repository.ApplicationRepository;
 import org.example.restapi.service.ApplicationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,8 @@ public class ApplicationServiceTest {
     private ApplicationDto applicationDto;
     private Application application;
 
-    private ApplicationServiceImpl applicationServiceImpl;
+
+
 
 
     @BeforeEach
@@ -47,14 +49,8 @@ public class ApplicationServiceTest {
         application.setHotCounter(20);
         application.setOrderTime(LocalDateTime.now());
 
-        applicationDto = new ApplicationDto();
-        applicationDto.setFirstName("John");
-        applicationDto.setMiddleName("Doe");
-        applicationDto.setLastName("Smith");
-        applicationDto.setPhoneNumber("1234567890");
-        applicationDto.setCouldCounter(10);
-        applicationDto.setHotCounter(20);
-        applicationDto.setOrderTime(LocalDateTime.now());
+        applicationDto =  ApplicationMapper.INSTANCE.toDto(application);
+
     }
 
     @Test
