@@ -21,7 +21,7 @@ public class ApplicationDto {
     private String middleName;
 
     @NotBlank(message = "Поле должно быть заполнено.")
-    @Pattern(regexp = "\\d{10}", message = "Неверно указанный номер телефона.")
+    @Pattern(regexp = "\\d{11}", message = "Неверно указанный номер телефона.")
     private String phoneNumber;
 
     @NotBlank(message = "Поле должно быть заполнено.")

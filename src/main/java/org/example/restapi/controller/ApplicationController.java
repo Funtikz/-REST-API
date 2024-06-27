@@ -18,7 +18,7 @@ public class ApplicationController {
 
     private final ApplicationService applicationService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<ApplicationDto>> findAll() {
         return new ResponseEntity<>(applicationService.getAllApplication(), HttpStatus.OK);
@@ -30,19 +30,19 @@ public class ApplicationController {
         return new ResponseEntity<>(applicationService.getApplicationById(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApplicationDto> create(@Valid @RequestBody ApplicationDto application) {
         return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(name = "id") Long id) {
         applicationService.deleteApplicationById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<ApplicationDto> update(@PathVariable("id") Long id, @Valid @RequestBody ApplicationDto application) {
         return new ResponseEntity<>(applicationService.updateApplication(id, application), HttpStatus.OK);
     }
