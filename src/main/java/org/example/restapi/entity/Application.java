@@ -26,4 +26,13 @@ public class Application {
     private Integer hotCounter;
     @Column(name = "order_time")
     private LocalDateTime orderTime;
+    @Column(name = "address")
+    private String address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
+    @Column(name = "description")
+    private String description;
 }

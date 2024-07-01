@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.example.restapi.entity.Status;
 
 import java.time.LocalDateTime;
 
@@ -37,4 +38,12 @@ public class ApplicationDto {
     private Integer hotCounter;
 
     private LocalDateTime orderTime;
+
+    @NotBlank
+    private String address;
+
+    private Status status;
+
+    private String description;
+
 }

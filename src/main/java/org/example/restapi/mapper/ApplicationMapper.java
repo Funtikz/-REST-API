@@ -13,8 +13,19 @@ import org.springframework.stereotype.Component;
 public interface ApplicationMapper {
 
     ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "description", source = "description")
     ApplicationDto toDto(Application application);
+
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "description", source = "description")
     Application toEntity(ApplicationDto applicationDto);
+
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "description", source = "description")
     void updateFromDto(ApplicationDto dto, @MappingTarget Application entity);
 }

@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.restapi.dto.ApplicationDto;
 import org.example.restapi.entity.Application;
+import org.example.restapi.entity.Status;
 import org.example.restapi.mapper.ApplicationMapper;
 import org.example.restapi.repository.ApplicationRepository;
 import org.example.restapi.service.model.ApplicationService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,17 +35,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationDto updateApplication(Long id, ApplicationDto updatedApplicationDto) {
         Optional<Application> optionalApplication = applicationRepository.findById(id);
         if (optionalApplication.isPresent()) {
-            Application existingApplication = optionalApplication.get();
-            existingApplication.setFirstName(updatedApplicationDto.getFirstName());
-            existingApplication.setMiddleName(updatedApplicationDto.getMiddleName());
-            existingApplication.setLastName(updatedApplicationDto.getLastName());
-            existingApplication.setPhoneNumber(updatedApplicationDto.getPhoneNumber());
-            existingApplication.setCouldCounter(updatedApplicationDto.getCouldCounter());
-            existingApplication.setHotCounter(updatedApplicationDto.getHotCounter());
-            existingApplication.setOrderTime(updatedApplicationDto.getOrderTime());
 
-            Application updatedApplication = applicationRepository.save(existingApplication);
-            return ApplicationMapper.INSTANCE.toDto(updatedApplication);
+            Application existingApplication = optionalApplication.get();
+            ApplicationMapper.INSTANCE.updateFromDto(updatedApplicationDto,existingApplication);
+            applicationRepository.save(existingApplication);
+            return ApplicationMapper.INSTANCE.toDto(existingApplication);
         } else {
             throw new EntityNotFoundException("Пользователя с id " + id + " не существует");
         }
@@ -51,14 +47,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public ApplicationDto createApplication(ApplicationDto applicationDto) {
-        Application application = new Application();
-        application.setFirstName(applicationDto.getFirstName());
-        application.setMiddleName(applicationDto.getMiddleName());
-        application.setLastName(applicationDto.getLastName());
-        application.setPhoneNumber(applicationDto.getPhoneNumber());
-        application.setCouldCounter(applicationDto.getCouldCounter());
-        application.setHotCounter(applicationDto.getHotCounter());
-        application.setOrderTime(applicationDto.getOrderTime());
+        Application application = ApplicationMapper.INSTANCE.toEntity(applicationDto);
+        application.setStatus(Status.IN_PROCESSING);
+        if (application.getOrderTime() == null){
+           application.setOrderTime(LocalDateTime.now());
+        }
         Application savedApplication = applicationRepository.save(application);
         return ApplicationMapper.INSTANCE.toDto(savedApplication);
     }
