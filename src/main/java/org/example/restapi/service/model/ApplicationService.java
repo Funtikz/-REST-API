@@ -10,4 +10,5 @@ public interface ApplicationService {
     ApplicationDto createApplication(ApplicationDto application);
     ApplicationDto getApplicationById(Long id);
     List<ApplicationDto> getAllApplication();
+    List<ApplicationDto> findByFio(String firstName, String lastName, String middleName);
 }

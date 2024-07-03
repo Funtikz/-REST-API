@@ -8,6 +8,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Mapper(componentModel = "spring")
 public interface ApplicationMapper {
@@ -22,6 +24,11 @@ public interface ApplicationMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")
     Application toEntity(ApplicationDto applicationDto);
+
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "description", source = "description")
+    List<ApplicationDto> listToDto(List<Application> listApplication);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "address", source = "address")

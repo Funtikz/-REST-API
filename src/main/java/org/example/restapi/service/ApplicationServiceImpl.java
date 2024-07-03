@@ -74,4 +74,16 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .toList();
     }
 
+    @Override
+    public List<ApplicationDto> findByFio(String firstName, String lastName, String middleName) {
+        List<Application> maybeUsers = applicationRepository.findByFio(firstName, lastName, middleName);
+        if (maybeUsers.isEmpty()){
+            throw new EntityNotFoundException("Пользователя с ФИО "
+                    + firstName + " " + lastName + " " +middleName  + " не существует");
+        }
+        else {
+            return  ApplicationMapper.INSTANCE.listToDto(maybeUsers);
+        }
+    }
+
 }

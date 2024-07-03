@@ -35,6 +35,15 @@ public class ApplicationController {
         return new ResponseEntity<>(applicationService.getApplicationById(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/get-by-fio")
+    @ResponseBody
+    @Operation(summary = "Позволяет найти пользователей по ФИО")
+    public ResponseEntity<List<ApplicationDto>> findByFio(@RequestParam("firstName") String firstName,
+                                                          @RequestParam("lastName") String lastName,
+                                                          @RequestParam("middleName") String middleName){
+        return new ResponseEntity<>(applicationService.findByFio(firstName, lastName, middleName), HttpStatus.OK);
+    }
+
     @Operation(summary = "Позволяет создать пользователя")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,6 +66,7 @@ public class ApplicationController {
 
         return new ResponseEntity<>(applicationService.updateApplication(id, application), HttpStatus.OK);
     }
-    
+
+
 
 }
