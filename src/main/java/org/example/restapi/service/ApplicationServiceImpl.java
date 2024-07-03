@@ -1,4 +1,5 @@
 package org.example.restapi.service;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -75,14 +76,41 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public List<ApplicationDto> findByFio(String firstName, String lastName, String middleName) {
+    public List<ApplicationDto> getByFio(String firstName, String lastName, String middleName) {
         List<Application> maybeUsers = applicationRepository.findByFio(firstName, lastName, middleName);
         if (maybeUsers.isEmpty()){
-            throw new EntityNotFoundException("Пользователя с ФИО "
+            throw new EntityNotFoundException("Заявки с таким ФИО "
                     + firstName + " " + lastName + " " +middleName  + " не существует");
         }
         else {
             return  ApplicationMapper.INSTANCE.listToDto(maybeUsers);
+        }
+    }
+
+    @Override
+    public List<ApplicationDto> getByStatus(Status status) {
+        List<Application> sortedByStatusApplication = applicationRepository.findInByStatus(status);
+        if (sortedByStatusApplication.isEmpty()){
+            throw new EntityNotFoundException(
+                    "Заявок с статусом " + status + " не существует"
+            );
+        }
+        else {
+            return ApplicationMapper.INSTANCE.listToDto(sortedByStatusApplication);
+        }
+    }
+
+    @Override
+    public List<ApplicationDto> getByNumberPhone(String phoneNumber) {
+
+        List<Application> sortedByStatusApplication = applicationRepository.findByPhoneNumber(phoneNumber);
+        if (sortedByStatusApplication.isEmpty()){
+            throw new EntityNotFoundException(
+                    "Заявок с номером " + phoneNumber + " не существует"
+            );
+        }
+        else {
+            return ApplicationMapper.INSTANCE.listToDto(sortedByStatusApplication);
         }
     }
 

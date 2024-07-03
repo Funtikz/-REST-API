@@ -4,6 +4,7 @@ package org.example.restapi;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.restapi.dto.ApplicationDto;
 import org.example.restapi.entity.Application;
+import org.example.restapi.entity.Status;
 import org.example.restapi.mapper.ApplicationMapper;
 import org.example.restapi.repository.ApplicationRepository;
 import org.example.restapi.service.ApplicationServiceImpl;
@@ -46,6 +47,7 @@ public class ApplicationServiceTest {
         application.setLastName("Smith");
         application.setPhoneNumber("1234567890");
         application.setCouldCounter(10);
+        application.setStatus(Status.PROCESSED);
         application.setHotCounter(20);
         application.setOrderTime(LocalDateTime.now());
 
@@ -135,6 +137,72 @@ public class ApplicationServiceTest {
                 () -> applicationService.deleteApplicationById(1L));
 
         assertEquals("Пользователя с id 1 не существует", exception.getMessage());
+    }
+
+    @Test
+    void testGetByFio(){
+        when(applicationRepository.findByFio(application.getFirstName(), application.getLastName(), application.getMiddleName())).thenReturn(List.of(application));
+
+        List<ApplicationDto> byFio = applicationService.getByFio(application.getFirstName(), application.getLastName(), application.getMiddleName());
+
+        assertEquals(1, byFio.size());
+        assertEquals(applicationDto.getFirstName(), byFio.get(0).getFirstName());
+    }
+    @Test
+    void testGetByFioNotFound(){
+        when(applicationRepository.findByFio(application.getFirstName(), application.getLastName(), application.getMiddleName())).thenReturn(List.of());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> applicationService.getByFio(application.getFirstName(), application.getLastName(), application.getMiddleName()));
+
+        assertEquals(("Заявки с таким ФИО "
+                + application.getFirstName() + " " + application.getLastName() + " " + application.getMiddleName()  + " не существует")
+        , exception.getMessage());
+
+    }
+
+    @Test
+    void testGetByStats(){
+        when(applicationRepository.findInByStatus(application.getStatus())).thenReturn(List.of(application));
+
+        List<ApplicationDto> byStatus = applicationService.getByStatus(application.getStatus());
+
+        assertEquals(1, byStatus.size());
+        assertEquals(application.getFirstName(), byStatus.get(0).getFirstName());
+    }
+
+    @Test
+    void testGetByStatusNotFound(){
+        when(applicationRepository.findInByStatus((Status.IN_PROCESSING))).thenReturn(List.of());
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> applicationService.getByStatus(Status.IN_PROCESSING));
+
+        assertEquals(("Заявок с статусом "
+                        + Status.IN_PROCESSING + " не существует")
+                , exception.getMessage());
+    }
+
+    @Test
+    void testGetByNumberPhone(){
+        when(applicationRepository.findByPhoneNumber(application.getPhoneNumber())).thenReturn(List.of(application));
+
+        List<ApplicationDto> byNumberPhone = applicationService.getByNumberPhone(application.getPhoneNumber());
+
+        assertEquals(1, byNumberPhone.size());
+        assertEquals(application.getLastName(), byNumberPhone.get(0).getLastName());
+    }
+
+    @Test
+    void testGetByNumberPhoneNotFound(){
+        when(applicationRepository.findByPhoneNumber(application.getPhoneNumber())).thenReturn(List.of());
+
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> applicationService.getByNumberPhone(application.getPhoneNumber()));
+
+        assertEquals("Заявок с номером " + application.getPhoneNumber() + " не существует", exception.getMessage());
+
     }
 
 }

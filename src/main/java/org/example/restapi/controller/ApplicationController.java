@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.restapi.dto.ApplicationDto;
+import org.example.restapi.entity.Status;
 import org.example.restapi.service.model.ApplicationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +42,21 @@ public class ApplicationController {
     public ResponseEntity<List<ApplicationDto>> findByFio(@RequestParam("firstName") String firstName,
                                                           @RequestParam("lastName") String lastName,
                                                           @RequestParam("middleName") String middleName){
-        return new ResponseEntity<>(applicationService.findByFio(firstName, lastName, middleName), HttpStatus.OK);
+        return new ResponseEntity<>(applicationService.getByFio(firstName, lastName, middleName), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-by-phone-number")
+    @ResponseBody
+    @Operation(summary = "Позволяет найти заявки по номеру телефона")
+    public ResponseEntity<List<ApplicationDto>> findByPhoneNumber(@RequestParam("phoneNumber") String phoneNumber){
+        return new ResponseEntity<>(applicationService.getByNumberPhone(phoneNumber), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-by-status")
+    @ResponseBody
+    @Operation(summary = "Позволяет найти заявки по статусу IN_PROCESSING, PROCESSED, COMPLETED")
+    public ResponseEntity<List<ApplicationDto>> findByStatus(@RequestParam("status") Status status){
+        return new ResponseEntity<>(applicationService.getByStatus(status), HttpStatus.OK);
     }
 
     @Operation(summary = "Позволяет создать пользователя")

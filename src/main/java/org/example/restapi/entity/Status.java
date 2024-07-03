@@ -1,5 +1,5 @@
 package org.example.restapi.entity;
 
 public enum Status {
-    IN_PROCESSING, PROCESSED
+    IN_PROCESSING, PROCESSED, COMPLETED
 }
