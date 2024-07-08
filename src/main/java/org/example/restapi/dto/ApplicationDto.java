@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.example.restapi.entity.Status;
+import org.example.restapi.entity.Worker;
 
 import java.time.LocalDateTime;
 
@@ -54,5 +55,9 @@ public class ApplicationDto {
 
     @Schema(description = "Какое либо дополнение пользователя", example = "Могу сегодня в 12:30")
     private String description;
+
+    @Schema(description = "Рабочий который потом привяжется к заявке", example = "null")
+    private Worker worker;
+
 
 }
