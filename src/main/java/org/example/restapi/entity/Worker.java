@@ -1,8 +1,8 @@
 package org.example.restapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -25,6 +25,10 @@ public class Worker {
     @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private WorkerCredentials credentials;
+
+    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private List<Application> applications;
 }

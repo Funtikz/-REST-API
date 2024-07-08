@@ -35,6 +35,7 @@ public class WorkerServiceImpl implements WorkerService {
         worker.setApplications(new ArrayList<>());
         workerCredentials.setWorker(worker);
         workerRepository.save(worker);
+        workerCredentialsRepository.save(workerCredentials);
         return worker;
     }
 

@@ -1,5 +1,6 @@
 package org.example.restapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +17,8 @@ public class WorkerCredentials {
     @Column(name = "password")
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "worker_id", referencedColumnName = "id")
+    @JsonManagedReference
     Worker worker;
 }

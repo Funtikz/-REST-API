@@ -34,5 +34,6 @@ public interface ApplicationMapper {
     @Mapping(target = "address", source = "address")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")
+    @Mapping(target = "worker", source = "worker")
     void updateFromDto(ApplicationDto dto, @MappingTarget Application entity);
 }
