@@ -35,4 +35,8 @@ public class Application {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "worker_id")
+    private Worker worker;
 }
