@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class ApplicationDto {
+    Long id;
     @NotBlank(message = "Поле должно быть заполнено.")
     @Size(min = 2, max = 64)
     @Schema(description = "Имя", example = "Никита")

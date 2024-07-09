@@ -1,6 +1,7 @@
 package org.example.restapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,5 +31,6 @@ public class Worker {
     private WorkerCredentials credentials;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Application> applications;
 }

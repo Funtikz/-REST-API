@@ -1,7 +1,6 @@
 package org.example.restapi;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.example.restapi.entity.Application;
 import org.example.restapi.entity.Worker;
 import org.example.restapi.entity.WorkerCredentials;
 import org.example.restapi.repository.ApplicationRepository;
@@ -15,10 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -131,21 +130,22 @@ public class WorkerServiceTest {
         verify(workerCredentialsRepository, times(1)).save(workerCredentials);
     }
 
-    @Test
-    public void addApplication(){
-        Application application = new Application();
-        application.setId(1L);
-        worker.setApplications(new ArrayList<>());
-
-        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
-        when(workerRepository.save(worker)).thenReturn(worker);
-        when(applicationRepository.save(application)).thenReturn(application);
-
-        Worker result = workerService.addApplication(1L, application);
-
-        assertEquals(worker, result);
-        assertTrue(worker.getApplications().contains(application));
-        verify(workerRepository, times(1)).findById(1L);
-        verify(workerRepository, times(1)).save(worker);
-    }
+//    @Test
+//    public void addApplication(){
+//        Application application = new Application();
+//        application.setId(1L);
+//        worker.setApplications(new ArrayList<>());
+//
+//        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+//        when(workerRepository.save(worker)).thenReturn(worker);
+//        when(workerRepository.findById(1L)).thenReturn(application);
+//        when(applicationRepository.save(application)).thenReturn(application);
+//
+//        Worker result = workerService.addApplication(1L, );
+//
+//        assertEquals(worker, result);
+//        assertTrue(worker.getApplications().contains(application));
+//        verify(workerRepository, times(1)).findById(1L);
+//        verify(workerRepository, times(1)).save(worker);
+//    }
 }

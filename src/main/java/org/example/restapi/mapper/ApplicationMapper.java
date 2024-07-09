@@ -15,22 +15,22 @@ import java.util.List;
 public interface ApplicationMapper {
 
     ApplicationMapper INSTANCE = Mappers.getMapper(ApplicationMapper.class);
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")
     ApplicationDto toDto(Application application);
-
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")
     Application toEntity(ApplicationDto applicationDto);
-
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")
     List<ApplicationDto> listToDto(List<Application> listApplication);
-
-    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "description", source = "description")

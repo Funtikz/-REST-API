@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -71,14 +72,20 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional
-    public Worker addApplication(Long workerId, Application application) {
+    public Worker addApplication(Long workerId, Long applicationId) {
         Worker selectedWorker = workerRepository.findById(workerId).orElseThrow(() ->
                 new EntityNotFoundException("Пользователь с таким id не найден"));
         List<Application> listOfApplications = selectedWorker.getApplications();
-        listOfApplications.add(application);
-        application.setWorker(selectedWorker);
-        applicationRepository.save(application);
-        return workerRepository.save(selectedWorker);
+        Optional<Application> application = applicationRepository.findById(applicationId);
+        if (application.isPresent()){
+            listOfApplications.add(application.get());
+            application.get().setWorker(selectedWorker);
+            applicationRepository.save(application.get());
+            return workerRepository.save(selectedWorker);
+        }
+        else {
+            throw new EntityNotFoundException("Заявки с таким id не найдено");
+        }
     }
 
     @Override

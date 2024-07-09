@@ -1,5 +1,6 @@
 package org.example.restapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,5 +39,6 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "worker_id")
+    @JsonBackReference
     private Worker worker;
 }

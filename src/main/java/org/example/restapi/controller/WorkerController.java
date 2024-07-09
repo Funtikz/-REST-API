@@ -39,9 +39,10 @@ public class WorkerController {
         return new ResponseEntity<>(workerService.updateWorker(id, worker), HttpStatus.OK);
     }
 
-//    @PutMapping("/{id}/add-application")
-//    public ResponseEntity<Worker> addApplication(@PathVariable("id") Long id,
-//                                                 @RequestBody ApplicationDto applicationDto){
-//
-//    }
+    @PutMapping("/{workerId}/add-application/{applicationId}")
+    public ResponseEntity<Worker> addApplication(@PathVariable("workerId") Long workerId,
+                                                 @PathVariable("applicationId") Long applicationId)
+    {
+        return  new ResponseEntity<>(workerService.addApplication(workerId,applicationId), HttpStatus.OK);
+    }
 }
