@@ -11,5 +11,5 @@ public interface WorkerService {
     public Worker addApplication(Long workerId, Long applicationId);
 
     public Worker getById(Long id);
-    public void removeApplication(Long workerId, Long applicationId);
+    public void removeApplicationFromWorker(Long workerId, Long applicationId);
 }

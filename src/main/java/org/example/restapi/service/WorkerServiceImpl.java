@@ -90,7 +90,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     @Transactional
-    public void removeApplication(Long workerId, Long applicationId) {
+    public void removeApplicationFromWorker(Long workerId, Long applicationId) {
         Worker selectedWorker = workerRepository.findById(workerId).orElseThrow(() ->
                 new EntityNotFoundException("Worker with id " + workerId + " not found"));
         Application application = applicationRepository.findById(applicationId).orElseThrow(() ->

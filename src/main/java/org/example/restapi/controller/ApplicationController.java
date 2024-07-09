@@ -22,14 +22,14 @@ public class ApplicationController {
 
     private final ApplicationService applicationService;
 
-    @Operation(summary = "Позволяет получить всех пользователей")
+    @Operation(summary = "Позволяет получить все заявки")
     @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody()
     public ResponseEntity<List<ApplicationDto>> findAll() {
         return new ResponseEntity<>(applicationService.getAllApplication(), HttpStatus.OK);
     }
 
-    @Operation(summary = "Позволяет получить пользователя по id")
+    @Operation(summary = "Позволяет получить заявку по id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<ApplicationDto> findById(@PathVariable("id") Long id) {
@@ -38,7 +38,7 @@ public class ApplicationController {
 
     @GetMapping(value = "/get-by-fio")
     @ResponseBody
-    @Operation(summary = "Позволяет найти пользователей по ФИО")
+    @Operation(summary = "Позволяет найти заявку по ФИО")
     public ResponseEntity<List<ApplicationDto>> findByFio(@RequestParam("firstName") String firstName,
                                                           @RequestParam("lastName") String lastName,
                                                           @RequestParam("middleName") String middleName){
@@ -59,14 +59,14 @@ public class ApplicationController {
         return new ResponseEntity<>(applicationService.getByStatus(status), HttpStatus.OK);
     }
 
-    @Operation(summary = "Позволяет создать пользователя")
+    @Operation(summary = "Позволяет создать заявку")
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApplicationDto> create(@Valid @RequestBody ApplicationDto application) {
         return new ResponseEntity<>(applicationService.createApplication(application), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Позволяет удалить пользователя")
+    @Operation(summary = "Позволяет удалить заявку")
     @DeleteMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable(name = "id") Long id) {
@@ -74,7 +74,7 @@ public class ApplicationController {
     }
 
     @Operation(
-            summary = "Позволяет обновить пользователя по id"
+            summary = "Позволяет обновить заявку по id"
     )
     @PutMapping("/{id}/update")
     public ResponseEntity<ApplicationDto> update(@PathVariable("id") Long id, @Valid @RequestBody ApplicationDto application) {
