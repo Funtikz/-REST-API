@@ -1,14 +1,16 @@
 package org.example.restapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.restapi.dto.WorkerCreationRequest;
+import org.example.restapi.dto.WorkerDto;
 import org.example.restapi.entity.Worker;
-import org.example.restapi.entity.WorkerCredentials;
 import org.example.restapi.service.model.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/worker")
@@ -16,18 +18,23 @@ import org.springframework.web.bind.annotation.*;
 public class WorkerController {
     private WorkerService workerService;
 
-    @PostMapping("/create")
-    @Operation(summary = "Позволяет получить всех пользователей")
-    public ResponseEntity<Worker> createWorker(@RequestBody WorkerCreationRequest workerRequest){
-        WorkerCredentials workerCredentials = workerRequest.getWorkerCredentials();
-        Worker worker = workerRequest.getWorker();
-        return new ResponseEntity<>(workerService.createWorker(worker,workerCredentials), HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}")
     @Operation(summary = "Позволяет получить пользователя по id")
-    public ResponseEntity<Worker> getById(@PathVariable("id") Long id){
+    public ResponseEntity<WorkerDto> getById(@PathVariable("id") Long id){
         return new ResponseEntity<>(workerService.getById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all")
+    @Operation(summary = "Позволяет получить всех пользователей")
+    public ResponseEntity<List<WorkerDto>> getAll(){
+        return new ResponseEntity<>(workerService.getAll(), HttpStatus.OK);
+    }
+
+
+    @PostMapping("/create")
+    @Operation(summary = "Позволяет получить всех пользователей")
+    public ResponseEntity<Worker> createWorker(@Valid @RequestBody Worker workerRequest){
+        return new ResponseEntity<>(workerService.createWorker(workerRequest), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -39,14 +46,14 @@ public class WorkerController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Позволяет обновить пользователя по id ")
-    public ResponseEntity<Worker> updateWorker(@PathVariable("id") Long id,
+    public ResponseEntity<WorkerDto> updateWorker(@Valid @PathVariable("id") Long id,
                                                @RequestBody Worker worker){
         return new ResponseEntity<>(workerService.updateWorker(id, worker), HttpStatus.OK);
     }
 
     @PutMapping("/{workerId}/add-application/{applicationId}")
     @Operation(summary = "Позволяет добавить пользователя определенную заявку по Id")
-    public ResponseEntity<Worker> addApplication(@PathVariable("workerId") Long workerId,
+    public ResponseEntity<WorkerDto> addApplication(@PathVariable("workerId") Long workerId,
                                                  @PathVariable("applicationId") Long applicationId)
     {
         return  new ResponseEntity<>(workerService.addApplication(workerId,applicationId), HttpStatus.OK);
