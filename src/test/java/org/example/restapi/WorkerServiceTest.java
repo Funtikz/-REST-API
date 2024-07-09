@@ -1,10 +1,11 @@
 package org.example.restapi;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.example.restapi.dto.WorkerDto;
+import org.example.restapi.entity.Application;
 import org.example.restapi.entity.Worker;
-import org.example.restapi.entity.WorkerCredentials;
+import org.example.restapi.mapper.WorkerMapper;
 import org.example.restapi.repository.ApplicationRepository;
-import org.example.restapi.repository.WorkerCredentialsRepository;
 import org.example.restapi.repository.WorkerRepository;
 import org.example.restapi.service.WorkerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,138 +15,206 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WorkerServiceTest {
+class WorkerServiceTest {
 
     @Mock
-    WorkerRepository workerRepository;
+    private WorkerRepository workerRepository;
 
     @Mock
-    WorkerCredentialsRepository workerCredentialsRepository;
+    private ApplicationRepository applicationRepository;
 
     @Mock
-    ApplicationRepository applicationRepository;
+    private WorkerMapper workerMapper;
 
     @InjectMocks
-    WorkerServiceImpl workerService;
+    private WorkerServiceImpl workerService;
+
     private Worker worker;
-    private WorkerCredentials workerCredentials;
+    private WorkerDto workerDto;
+    private Application application;
 
     @BeforeEach
-    public void setUp(){
+    void setUp() {
         worker = new Worker();
-        worker.setFirstName("Никита");
-        worker.setLastName("Щербаков");
-        worker.setMiddleName("Александрович");
         worker.setId(1L);
-        worker.setPhoneNumber("89882505362");
-        workerCredentials = new WorkerCredentials();
-        workerCredentials.setPassword("12345");
-        workerCredentials.setLogin("nikita");
-        workerCredentials.setWorker(worker);
+        worker.setFirstName("John");
+        worker.setLastName("Doe");
+        worker.setMiddleName("Middle");
+        worker.setPhoneNumber("12345678901");
+
+        workerDto = new WorkerDto();
+        workerDto.setId(1L);
+        workerDto.setFirstName("John");
+        workerDto.setLastName("Doe");
+        workerDto.setMiddleName("Middle");
+        workerDto.setPhoneNumber("12345678901");
+
+        application = new Application();
+        application.setId(1L);
+        application.setWorker(worker);
+        worker.setApplications(List.of(application));
     }
 
     @Test
-    public void testCreateWorker(){
+    void testGetByIdSuccess() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        when(workerMapper.toDto(worker)).thenReturn(workerDto);
+
+        WorkerDto foundWorker = workerService.getById(1L);
+
+        assertNotNull(foundWorker);
+        assertEquals("John", foundWorker.getFirstName());
+    }
+
+    @Test
+    void testGetByIdNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.getById(1L));
+    }
+
+    @Test
+    void testGetAll() {
+        List<Worker> workers = List.of(worker);
+        when(workerRepository.findAll()).thenReturn(workers);
+        when(workerMapper.toDto(workers)).thenReturn(List.of(workerDto));
+
+        List<WorkerDto> foundWorkers = workerService.getAll();
+
+        assertNotNull(foundWorkers);
+        assertEquals(1, foundWorkers.size());
+        assertEquals("John", foundWorkers.get(0).getFirstName());
+    }
+
+    @Test
+    void testCreateWorker() {
         when(workerRepository.save(any(Worker.class))).thenReturn(worker);
 
-        Worker createdWorker = workerService.createWorker(worker, workerCredentials);
+        Worker createdWorker = workerService.createWorker(worker);
 
-        assertEquals(worker, createdWorker);
-        assertEquals(worker, workerCredentials.getWorker());
-        verify(workerRepository, times(1)).save(any(Worker.class));
+        assertNotNull(createdWorker);
+        assertEquals("John", createdWorker.getFirstName());
+        assertTrue(createdWorker.getApplications().isEmpty());
     }
 
     @Test
-    public void getById(){
-        when(workerRepository.findById(1L)).thenReturn(Optional.ofNullable(worker));
-
-        Worker byId = workerService.getById(1L);
-        assertEquals(worker, byId);
-    }
-    @Test
-    public void getByIdNotFound() {
-        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> {
-            workerService.getById(1L);
-        });
-    }
-
-    @Test
-    public void updateWorker(){
-        Worker createdWorker = new Worker();
-        createdWorker.setFirstName("Александр");
-        createdWorker.setLastName("Щербаков");
-        createdWorker.setMiddleName("Александрович");
-        createdWorker.setId(1L);
-        createdWorker.setPhoneNumber("89882505362");
-
-        when(workerRepository.findById(1L)).thenReturn(Optional.ofNullable(worker));
-        when(workerRepository.save(worker)).thenReturn(createdWorker);
-
-        Worker updatedWorker = workerService.updateWorker(1L, createdWorker);
-
-        assertEquals(createdWorker.getLastName(), updatedWorker.getLastName());
-        verify(workerRepository, times(1)).findById(1L);
-        verify(workerRepository, times(1)).save(worker);
-    }
-
-    @Test
-    public void testUpdateWorkerNotFound(){
-
-        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () ->{
-           workerService.updateWorker(1L, new Worker());
-        });
-    }
-
-    @Test
-    public void deleteWorker(){
+    void testUpdateWorkerSuccess() {
         when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        when(workerRepository.save(any(Worker.class))).thenReturn(worker);
+        when(workerMapper.toDto(worker)).thenReturn(workerDto);
+
+        WorkerDto updatedWorker = workerService.updateWorker(1L, worker);
+
+        assertNotNull(updatedWorker);
+        assertEquals("John", updatedWorker.getFirstName());
+    }
+
+    @Test
+    void testUpdateWorkerNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.updateWorker(1L, worker));
+    }
+
+    @Test
+    void testDeleteWorkerSuccess() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        doNothing().when(workerRepository).delete(worker);
 
         workerService.deleteWorker(1L);
 
-        verify(workerRepository, times(1)).findById(1L);
         verify(workerRepository, times(1)).delete(worker);
     }
 
     @Test
-    public void changePassword(){
-        when(workerCredentialsRepository.findById(1L)).thenReturn(Optional.of(workerCredentials));
-        when(workerCredentialsRepository.save(workerCredentials)).thenReturn(workerCredentials);
+    void testDeleteWorkerNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
 
-        WorkerCredentials result = workerService.changePassword(1L, "newpassword");
+        assertThrows(EntityNotFoundException.class, () -> workerService.deleteWorker(1L));
+    }
 
-        assertEquals("newpassword", result.getPassword());
-        verify(workerCredentialsRepository, times(1)).findById(1L);
-        verify(workerCredentialsRepository, times(1)).save(workerCredentials);
+    @Test
+    void testChangePasswordSuccess() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        when(workerRepository.save(any(Worker.class))).thenReturn(worker);
+
+        Worker updatedWorker = workerService.changePassword(1L, "newPassword");
+
+        assertNotNull(updatedWorker);
+        assertEquals("newPassword", updatedWorker.getPassword());
+    }
+
+    @Test
+    void testChangePasswordNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.changePassword(1L, "newPassword"));
     }
 
 //    @Test
-//    public void addApplication(){
-//        Application application = new Application();
-//        application.setId(1L);
+//    void testAddApplicationSuccess() {
 //        worker.setApplications(new ArrayList<>());
-//
 //        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
-//        when(workerRepository.save(worker)).thenReturn(worker);
-//        when(workerRepository.findById(1L)).thenReturn(application);
-//        when(applicationRepository.save(application)).thenReturn(application);
+//        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
+//        when(workerRepository.save(any(Worker.class))).thenReturn(worker);
+//        when(applicationRepository.save(any(Application.class))).thenReturn(application);
+//        when(workerMapper.toDto(worker)).thenReturn(workerDto);
+//        WorkerDto updatedWorker = workerService.addApplication(1L, 1L);
 //
-//        Worker result = workerService.addApplication(1L, );
-//
-//        assertEquals(worker, result);
-//        assertTrue(worker.getApplications().contains(application));
-//        verify(workerRepository, times(1)).findById(1L);
-//        verify(workerRepository, times(1)).save(worker);
+//        assertNotNull(updatedWorker);
+//        assertEquals(1, updatedWorker.getApplications().size());
 //    }
+
+    @Test
+    void testAddApplicationWorkerNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.addApplication(1L, 1L));
+    }
+
+    @Test
+    void testAddApplicationNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.addApplication(1L, 1L));
+    }
+
+//    @Test
+//    void testRemoveApplicationFromWorkerSuccess() {
+//        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+//        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
+//        when(workerRepository.save(any(Worker.class))).thenReturn(worker);
+//        when(applicationRepository.save(any(Application.class))).thenReturn(application);
+//
+//        workerService.removeApplicationFromWorker(1L, 1L);
+//
+//        verify(applicationRepository, times(1)).save(application);
+//        verify(workerRepository, times(1)).save(worker);
+//        assertTrue(worker.getApplications().isEmpty());
+//    }
+
+    @Test
+    void testRemoveApplicationFromWorkerWorkerNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.removeApplicationFromWorker(1L, 1L));
+    }
+
+    @Test
+    void testRemoveApplicationFromWorkerApplicationNotFound() {
+        when(workerRepository.findById(1L)).thenReturn(Optional.of(worker));
+        when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> workerService.removeApplicationFromWorker(1L, 1L));
+    }
 }

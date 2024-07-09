@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,5 +50,5 @@ public class Worker {
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
 }

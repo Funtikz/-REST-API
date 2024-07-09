@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.example.restapi.entity.Application;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -32,5 +34,5 @@ public class WorkerDto {
     @Schema(description = "Номер телефона с +", example = "89882505363")
     private String phoneNumber;
 
-    private List<Application> applications;
+    private List<Application> applications = new ArrayList<>();
 }
